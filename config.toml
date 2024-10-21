@@ -1,0 +1,13 @@
+[tgbot]
+    token="7253116985:AAEgKV3K6FhbovkZxmL1BxUqX-imztom420"
+
+[links]
+    kate = "https://t.me/Kate_ritson"    
+
+[source]
+    kate_ritson_about = "./source/about/about.jpg"
+
+[[source.abstract_pictures]]
+name = "Картина «Лунный свет»"
+path = "./source/abstract_pictures/abstract1/"
+description = "Моя новая работа — это игра света и текстур, где зеркальная поталь встречается с глубиной тёмного моря. Картина символизирует момент, когда человек остается один на один со своими мыслями. Это диалог с самим собой, который часто происходит в моменты тишины и одиночества."
