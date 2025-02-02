@@ -1,8 +1,10 @@
 package app
 
 import (
-	"kate_ritson_art_bot/config"
-	"kate_ritson_art_bot/internal/tgbot"
+	"townpoint_bot/app/entfx"
+	"townpoint_bot/config"
+	"townpoint_bot/internal/services"
+	"townpoint_bot/internal/tgbot"
 
 	"go.uber.org/fx"
 )
@@ -12,8 +14,10 @@ func New() *fx.App {
 	return fx.New(
 		fx.Provide(
 			config.New,
+			services.NewYadisk,
 		),
 
+		entfx.Module,
 		tgbot.Module,
 	)
 }

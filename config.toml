@@ -1,13 +1,13 @@
 [tgbot]
-    token="7253116985:AAEgKV3K6FhbovkZxmL1BxUqX-imztom420"
+    token="7912131071:AAH-eBmgjQC4AX1X0_Hj_37PlWilI8cESZo"
 
 [links]
     kate = "https://t.me/Kate_ritson"    
 
-[source]
-    kate_ritson_about = "./source/about/about.jpg"
 
-[[source.abstract_pictures]]
-name = "Картина «Лунный свет»"
-path = "./source/abstract_pictures/abstract1/"
-description = "Моя новая работа — это игра света и текстур, где зеркальная поталь встречается с глубиной тёмного моря. Картина символизирует момент, когда человек остается один на один со своими мыслями. Это диалог с самим собой, который часто происходит в моменты тишины и одиночества."
+[yadisk]
+    token = "y0__xD4oOhqGP7vNCDP2c-UEthN9zPWPjh9kWiZrCWUxA6syyiA"
+    path = "/townpointbot/video/"
+
+[postgres]
+    url = "postgres://townpoint:townpoint@townpoint-db:5432/townpoint?sslmode=disable"

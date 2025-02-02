@@ -34,16 +34,25 @@ type MarkupNode struct {
 	maxRepeatNumber int
 	afterRepeat     *MarkupNode
 
-	afterFunc  ContentFunc
-	handleFunc HandleFunc
-	beforeFunc ContentFunc
-	afkFunc    HandleAfkFunc
+	afterFunc      ContentFunc
+	handleFunc     HandleFunc
+	beforeFunc     ContentFunc
+	nextHandleFunc HandleFunc
+	afkFunc        HandleAfkFunc
 
 	// iternal logic fields
 	remindAFKquit chan bool
 	quitAFK       chan bool
 	quitLater     chan bool
 	repeatNumber  int
+}
+
+func (n *MarkupNode) SetBeforeFunc(f ContentFunc) {
+	n.beforeFunc = f
+}
+
+func (n *MarkupNode) SetAfterFunc(f ContentFunc) {
+	n.afterFunc = f
 }
 
 func (n *MarkupNode) SetAnswers(answers [][]*MarkupAnswer) {
@@ -104,10 +113,11 @@ type MarkupParams struct {
 	Prev    *MarkupNode
 	Message tgbotapi.Chattable
 
-	AfterFunc  ContentFunc
-	HandleFunc HandleFunc
-	BeforeFunc ContentFunc
-	AfkFunc    HandleAfkFunc
+	AfterFunc      ContentFunc
+	HandleFunc     HandleFunc
+	BeforeFunc     ContentFunc
+	NextHandleFunc HandleFunc
+	AfkFunc        HandleAfkFunc
 
 	MaxRepeatNumber int
 	AfterRepeat     *MarkupNode
@@ -127,10 +137,11 @@ func NewMarkupNode(params MarkupParams) *MarkupNode {
 		maxRepeatNumber: params.MaxRepeatNumber,
 		afterRepeat:     params.AfterRepeat,
 
-		afterFunc:  params.AfterFunc,
-		handleFunc: params.HandleFunc,
-		beforeFunc: params.BeforeFunc,
-		afkFunc:    params.AfkFunc,
+		afterFunc:      params.AfterFunc,
+		handleFunc:     params.HandleFunc,
+		nextHandleFunc: params.NextHandleFunc,
+		beforeFunc:     params.BeforeFunc,
+		afkFunc:        params.AfkFunc,
 
 		remindAFKquit: make(chan bool, 1),
 		quitAFK:       make(chan bool, 1),
@@ -200,6 +211,10 @@ answersLoop:
 	// iternal logic before send message
 	if m.handleFunc != nil {
 		m.handleFunc(query.Data)
+	}
+
+	if nextNode.handleFunc != nil {
+		nextNode.handleFunc(query.Data)
 	}
 
 	var beforeMsg tgbotapi.Chattable

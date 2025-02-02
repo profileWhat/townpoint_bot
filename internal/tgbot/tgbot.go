@@ -1,9 +1,12 @@
 package tgbot
 
 import (
-	"kate_ritson_art_bot/config"
-	"kate_ritson_art_bot/internal/interfaces"
 	"log"
+	"townpoint_bot/config"
+	"townpoint_bot/internal/interfaces"
+	"townpoint_bot/internal/services"
+
+	ent "townpoint_bot/ent/generated"
 
 	"strings"
 
@@ -17,11 +20,13 @@ type TGBot struct {
 	quit   chan bool
 	api    *tgbotapi.BotAPI
 
-	briefs    map[int64]*BriefGraph
-	abstracts map[int64]*AbstractGraph
+	entity *ent.Client
+	yadisk *services.Yadisk
+
+	sessions map[int64]*TownpointGraph
 }
 
-func New(config *config.Config) *TGBot {
+func New(config *config.Config, entity *ent.Client, yadisk *services.Yadisk) *TGBot {
 	bot, err := tgbotapi.NewBotAPI(config.TGbot.Token)
 	if err != nil {
 		// Abort if something is wrong
@@ -29,10 +34,11 @@ func New(config *config.Config) *TGBot {
 	}
 
 	return &TGBot{
-		api:       bot,
-		quit:      make(chan bool, 1),
-		briefs:    make(map[int64]*BriefGraph),
-		abstracts: make(map[int64]*AbstractGraph),
+		api:      bot,
+		quit:     make(chan bool, 1),
+		sessions: make(map[int64]*TownpointGraph),
+		entity:   entity,
+		yadisk:   yadisk,
 
 		config: config,
 	}
@@ -70,14 +76,9 @@ func (b *TGBot) handleUpdate(update tgbotapi.Update) {
 	// Handle button clicks
 	case update.CallbackQuery != nil:
 		chatID := update.CallbackQuery.Message.Chat.ID
-		brief, ok := b.briefs[chatID]
+		session, ok := b.sessions[chatID]
 		if ok {
-			brief.Continue(update.CallbackQuery)
-		}
-
-		abstr, ok := b.abstracts[chatID]
-		if ok {
-			abstr.Continue(update.CallbackQuery)
+			session.Continue(update.CallbackQuery)
 		}
 	}
 }
@@ -95,7 +96,12 @@ func (b *TGBot) handleMessage(message *tgbotapi.Message) {
 
 	var err error
 	if strings.HasPrefix(text, "/") {
-		err = b.handleCommand(message.Chat.ID, text)
+		err = b.handleCommand(user.UserName, message.Chat.ID, text)
+	} else {
+		session, ok := b.sessions[message.Chat.ID]
+		if ok {
+			session.ContinueM(message)
+		}
 	}
 
 	if err != nil {
@@ -104,40 +110,20 @@ func (b *TGBot) handleMessage(message *tgbotapi.Message) {
 }
 
 // When we get a command, we react accordingly
-func (b *TGBot) handleCommand(chatId int64, command string) error {
+func (b *TGBot) handleCommand(username string, chatId int64, command string) error {
 	var err error
 
 	switch command {
-	case "/abstract":
-		abstr, ok := b.abstracts[chatId]
+	case "/start":
+		session, ok := b.sessions[chatId]
 		if ok {
-			abstr.Quit()
+			session.Quit()
 		}
 
-		b.abstracts[chatId] = NewAbstractGraph(b.config, b.api, chatId)
-		b.abstracts[chatId].Start()
-	case "/brief":
-		game, ok := b.briefs[chatId]
-		if ok {
-			game.Quit()
-		}
-
-		b.briefs[chatId] = NewBriefGraph(b.config, b.api, chatId)
-		b.briefs[chatId].Start()
+		b.sessions[chatId] = NewTownpointGraph(b.config, b.api, b.entity, b.yadisk, chatId, username)
+		b.sessions[chatId].Start()
 	case "/about":
-		text := `Лучшая художница Kate Ritson 🌺
-
-Занимаюсь абстрактным искусством, наполняю картины самыми яркими чувствами.
-Мой тг канал:
-https://t.me/kateritson
-
-Разработка логотипов совместно с клиентом, любые капризы за ваши деньги 
-
-Мой инстаграм:
-https://www.instagram.com/kate.ritson.art?igsh=czBtNWQ2aTluNm04
-
-
-`
+		text := ``
 
 		msg := tgbotapi.NewMessage(chatId, text)
 

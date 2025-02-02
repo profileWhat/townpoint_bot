@@ -16,9 +16,16 @@ func New() (*Config, error) {
 }
 
 type Config struct {
-	TGbot  TGbot  `toml:"tgbot"`
-	Links  Links  `toml:"links"`
-	Source Source `toml:"source"`
+	TGbot    TGbot    `toml:"tgbot"`
+	Links    Links    `toml:"links"`
+	Source   Source   `toml:"source"`
+	Postgres Postgres `toml:"postgres"`
+	Yadisk   Yadisk   `toml:"yadisk"`
+}
+
+type Yadisk struct {
+	Token string `toml:"token"`
+	Path  string `toml:"path"`
 }
 
 type TGbot struct {
@@ -30,13 +37,11 @@ type Links struct {
 	Kate    string `toml:"kate"`
 }
 
-type AbstractPicture struct {
-	Name        string `toml:"name"`
-	Path        string `toml:"path"`
-	Description string `toml:"description"`
+type Source struct {
+	PointPicturesPath string `toml:"point_pictures"`
+	PointVideosPath   string `toml:"point_videos"`
 }
 
-type Source struct {
-	KateRitsonAbout  string            `toml:"kate_ritson_about"`
-	AbstractPictures []AbstractPicture `toml:"abstract_pictures"`
+type Postgres struct {
+	URL string `toml:"url" env:"POSTGRES_URL"`
 }

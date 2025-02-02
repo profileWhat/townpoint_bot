@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  townpoint:
+    container_name: townpoint
+    image: townpoint
+    depends_on:
+      migrations:
+        condition:
+          service_completed_successfully
+    build:
+      context: .
+    ports:
+      - '${HTTP_PORT:-4000}:4000'
+    environment:
+      ENABLE_CORS: true
+      HTTP_ADDRESS: '${HTTP_ADDRESS:-http://localhost:3000/}'
+      POSTGRES_URL: '${POSTGRES_URL}'
+      ENT_DEBUG: true
+    restart: always
+    volumes:
+      - './config/config.toml:/config/config.toml:ro'
+      - './source:/source'
+      - './csv/data.csv:/csv/data.csv:ro'
+    networks:
+      - intranet
+
+  db:
+    container_name: townpoint-db
+    image: postgres:15.2-alpine
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+    volumes:
+      - 'townpoint_data:/var/lib/postgresql/data'
+      - './dbinit.sql:/docker-entrypoint-initdb.d/init.sql'
+    environment:
+      POSTGRES_USER: 'townpoint'
+      POSTGRES_PASSWORD: 'townpoint'
+      POSTGRES_DB: 'townpoint'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "townpoint", "-U", "townpoint" ]
+      retries: 3
+      timeout: 5s
+    networks:
+      - intranet
+
+  migrations:
+    container_name: townpoint-migrations
+    depends_on:
+      db:
+        condition: service_healthy
+    build:
+      dockerfile: Dockerfile.migrations
+    command: ["-path", "/migrations", "-database",  "postgres://townpoint:townpoint@townpoint-db:5432/townpoint?sslmode=disable", "up"]
+    networks:
+      - intranet
+
+networks:
+  intranet:
+    name: townpoint-backend_intranet
+volumes:
+  townpoint_data:

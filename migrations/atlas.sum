@@ -1,0 +1,11 @@
+h1:/CuX75wK9H2rqTsw2y+ZtWlS1u0zBV2lU1y6RGpWf4c=
+20250114204939_init.down.sql h1:125dnFa0ue7iOMRHc71mZm+230ZOGYefUrkqup8Dta0=
+20250114204939_init.up.sql h1:C0/TdmFSIriWzoSHqGYtedg6BfvGr/HQUgREOoZFEeE=
+20250115093511_rename_fks.down.sql h1:ecbZ1Lp4xnpr67HNpBSd0Y2yYKYnkW1g3gslHaYN2p4=
+20250115093511_rename_fks.up.sql h1:TMJoQG+QFiXPPPjd8ty0crlBhiaUq8rLEdOiNiIrnwM=
+20250115094240_add_name_to_point_and_uniqueues.down.sql h1:zFH8C9OQ2N4O80V3U/5RsR6rMZF7QfA49qAQ4xCwv10=
+20250115094240_add_name_to_point_and_uniqueues.up.sql h1:D7ane+tSve5GFah1Q0iu14206mVgzhUH0RqwoaExrnI=
+20250115095518_add_point_phone.down.sql h1:3k/yQvZI+/E56qcqkBAEJ+5wx6IPHLwll+iiWP8UAYk=
+20250115095518_add_point_phone.up.sql h1:ZHxcv4C33/be0IE4hzeh8cmYtNu8HIwjfSEMHqWCPXw=
+20250115134534_add_users.down.sql h1:0LOPA1wTKXr7yxN1trUaEX+s06HAVVskIT53RYZ5+gk=
+20250115134534_add_users.up.sql h1:w6WtmsQcN56kDKMiu1vCz0FfIkpnlLKMpZupLKufJhQ=
