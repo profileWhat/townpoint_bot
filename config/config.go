@@ -1,15 +1,44 @@
 package config
 
 import (
+	"log"
+	"os"
+
 	"github.com/BurntSushi/toml"
+	"github.com/joho/godotenv"
 )
 
 func New() (*Config, error) {
 	cfg := &Config{}
 
-	_, err := toml.DecodeFile("./config.toml", &cfg)
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("cant download env")
+	}
+
+	_, err = toml.DecodeFile("./config.toml", &cfg)
 	if err != nil {
 		return nil, err
+	}
+
+	tgbotToken := os.Getenv("TGBOT_TOKEN")
+	if tgbotToken != "" {
+		cfg.TGbot.Token = tgbotToken
+	}
+
+	yadiskToken := os.Getenv("YADISK_TOKEN")
+	if yadiskToken != "" {
+		cfg.Yadisk.Token = yadiskToken
+	}
+
+	yadiskPath := os.Getenv("YADISK_PATH")
+	if yadiskPath != "" {
+		cfg.Yadisk.Path = yadiskPath
+	}
+
+	postgresURL := os.Getenv("POSTGRES_URL")
+	if postgresURL != "" {
+		cfg.Postgres.URL = postgresURL
 	}
 
 	return cfg, nil

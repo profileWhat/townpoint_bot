@@ -19,7 +19,7 @@ services:
       ENT_DEBUG: true
     restart: always
     volumes:
-      - './config/config.toml:/config/config.toml:ro'
+      - './config.toml:/config.toml:ro'
       - './source:/source'
       - './csv/data.csv:/csv/data.csv:ro'
     networks:

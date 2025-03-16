@@ -23,6 +23,7 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
+	github.com/joho/godotenv v1.5.1
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.21 // indirect
