@@ -10,4 +10,4 @@
     path = "/townpointbot/video/"
 
 [postgres]
-    url = "postgres://townpoint:townpoint@townpoint-db:5432/townpoint?sslmode=disable"
+    url = "postgres://townpoint:townpoint@127.0.0.1:5432/townpoint?sslmode=disable"
