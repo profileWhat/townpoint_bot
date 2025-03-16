@@ -51,7 +51,7 @@ services:
         condition: service_healthy
     build:
       dockerfile: Dockerfile.migrations
-    command: ["-path", "/migrations", "-database",  "postgres://townpoint:townpoint@localhost:5432/townpoint?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database",  "postgres://townpoint:townpoint@townpointdb:5432/townpoint?sslmode=disable", "up"]
     networks:
       - intranet
 
