@@ -26,7 +26,7 @@ services:
       - intranet
 
   db:
-    container_name: townpoint-db
+    container_name: townpointdb
     image: postgres:15.2-alpine
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
@@ -45,13 +45,13 @@ services:
       - intranet
 
   migrations:
-    container_name: townpoint-migrations
+    container_name: townpointmigrations
     depends_on:
       db:
         condition: service_healthy
     build:
       dockerfile: Dockerfile.migrations
-    command: ["-path", "/migrations", "-database",  "postgres://townpoint:townpoint@127.0.0.1:5432/townpoint?sslmode=disable", "up"]
+    command: ["-path", "/migrations", "-database",  "postgres://townpoint:townpoint@townpointdb:5432/townpoint?sslmode=disable", "up"]
     networks:
       - intranet
 
